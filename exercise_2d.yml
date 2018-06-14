@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: 2010-09-09
+Mappings:
+  MyAMIS:
+    linux:
+      AMIID: 'ami-14c5486b'
+    ubuntu:
+      AMIID: 'ami-a4dc46db'
+    windows:
+      AMIID: 'ami-f0df538f'
+Resources:
+  S3B2FDBS:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref MyBucketName
+  EC2IDV8M:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: !Ref MyInstanceType
+      ImageId: !FindInMap 
+        - MyAMIS
+        - linux
+        - AMIID
+      SubnetId: !Ref MySubNets
+      Tags:
+        - Key: Name
+          Value: 'Unconf_ec2'
+      SecurityGroupIds:
+        - !Ref EC2SG19Q5W
+    DependsOn:
+      - S3B2FDBS
+  EC2SG19Q5W:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Enable HTTP access via port 80'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+Parameters:
+  MyBucketName:
+    Type: String
+    Description: 'The name of the bucket'
+    Default: 'unconference-ec2-bucket'
+  MyInstanceType:
+    Type: String
+    Description: 'The instance type'
+    Default: 't2.micro'
+    AllowedValues:
+      - 't2.micro'
+      - 'm1.small'
+      - 'm1.large'
+  MySubNets:
+    Type: String
+    Description: 'Subnet IDs'
+    AllowedValues: 
+      - 'subnet-28c83206'
+      - 'subnet-330a8679'
+      - 'subnet-759e6629'
+  MySecretParameter:    
+    Type: String
+    NoEcho: True
+    Description: 'Used mostly for passwords, secret keys or other private parameter values'

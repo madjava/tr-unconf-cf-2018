@@ -1,0 +1,83 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Mappings": {
+        "MyAMIS": {
+            "linux": {
+                "AMIID": "ami-14c5486b"
+            },
+            "ubuntu": {
+                "AMIID": "ami-a4dc46db"
+            },
+            "windows": {
+                "AMIID": "ami-f0df538f"
+            }
+        }
+    },
+    "Resources": {
+        "S3B2FDBS": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Ref": "MyBucketName"
+                }
+            }
+        },
+        "EC2IDV8M": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "InstanceType": {
+                    "Ref": "MyInstanceType"
+                },
+                "ImageId": {
+                    "Fn::FindInMap": [
+                        "MyAMIS",
+                        "linux",
+                        "AMIID"
+                    ]
+                },
+                "SubnetId": {
+                    "Ref": "MySubNets"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "Unconf_ec2"
+                    }
+                ]
+            },
+            "DependsOn": [
+                "S3B2FDBS"
+            ]
+        }
+    },
+    "Parameters": {
+        "MyBucketName": {
+            "Type": "String",
+            "Description": "The name of the bucket",
+            "Default": "unconference-ec2-bucket"
+        },
+        "MyInstanceType": {
+            "Type": "String",
+            "Description": "The instance type",
+            "Default": "t2.micro",
+            "AllowedValues": [
+                "t2.micro",
+                "m1.small",
+                "m1.large"
+            ]
+        },
+        "MySubNets": {
+            "Description": "Subnet IDs",
+            "Type": "String"
+        },
+        "DBPassword": {
+            "NoEcho": true,
+            "Description": "The WordPress database admin account password",
+            "Type": "String",
+            "MinLength": 8,
+            "MaxLength": 41,
+            "AllowedPattern": "[a-zA-Z0-9]*",
+            "ConstraintDescription": "must contain only alphanumeric characters."
+        }
+    }
+}

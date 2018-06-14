@@ -1,0 +1,20 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+        "S3B2FDBS": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Ref": "MyBucketName"
+                }
+            }
+        }
+    },
+    "Parameters": {
+        "MyBucketName": {
+            "Type": "String",
+            "Description": "The name of the bucket",
+            "Default": "UnconferenceS3"
+        }
+    }
+}

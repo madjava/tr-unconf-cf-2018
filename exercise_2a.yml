@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  S3B2FDBS:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Ref MyBucketName
+
+  EC2IDV8M:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      #ami may not exist, verify from the console and pick a correct one
+      ImageId: ami-14c5486b 
+      SubnetId: subnet-28c83206
+    DependsOn:
+      - S3B2FDBS
+
+Parameters:
+  MyBucketName:
+    Type: String
+    Description: The name of the bucket
+    Default: 'unconference_ec2_bucket'
